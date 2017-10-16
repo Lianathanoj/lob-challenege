@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact Representative</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+</head>
+<body>
+    <h1 class="center-align" style="color: #ff5252">Contact Your Representative</h1>
+    <br>
+    <div class="row">
+        <form id="sender_form" class="col s12" method="post" action="{{ url_for('index') }}">
+            <div class="row">
+                <div class="input-field col s6 offset-s3">
+                    <input placeholder="First and last name" id="name" name="name" type="text" class="validate" required>
+                    <label for="name">Name</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s6 offset-s3">
+                    <input placeholder="Street address, P.O. box, company name" id="address1" name="address1" type="text" class="validate" required>
+                    <label for="address1">Address 1</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s6 offset-s3">
+                    <input placeholder="Apartment, suite, unit, building, floor, etc." id="address2" name="address2" type="text" class="validate">
+                    <label for="name">Address 2</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s2 offset-s3">
+                    <input id="city" name="city" type="text" class="validate" required>
+                    <label for="city">City</label>
+                </div>
+                <div class="input-field col s2">
+                    <input id="state" name="state" type="text" class="validate" required>
+                    <label for="state">State</label>
+                </div>
+                <div class="input-field col s2">
+                    <input id="zip" name="zip" type="text" class="validate" required>
+                    <label for="zip">Zipcode</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s6 offset-s3">
+                    <textarea id="message" id="message" name="message" class="materialize-textarea validate"></textarea>
+                    <label for="message">Message</label>
+                </div>
+            </div>
+        </form>
+        <div class="center-align">
+            <button class="btn waves-effect waves-light" style="background-color: #ff5252" type="submit" form="sender_form" name="action">Submit
+                <i class="material-icons right">send</i>
+            </button>
+        </div>
+    </div>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+</body>
+</html>
