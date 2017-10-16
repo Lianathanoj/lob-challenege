@@ -19,52 +19,56 @@ def index():
         sender_state = request.form.get('state')
         sender_zip = request.form.get('zip')
         sender_message = request.form.get('message')
-        print(sender_name, sender_address_line1, sender_address_line2, sender_city, sender_state, sender_zip, sender_message)
 
-        # find representative to contact using Lob API
-        rep = civic_info_api.representatives().representativeInfoByAddress(address = sender_address_line1,
+        # find representative to contact using Civic Info API
+        try:
+            rep = civic_info_api.representatives().representativeInfoByAddress(address = sender_address_line1,
                                                                            levels='administrativeArea1',
                                                                            roles='deputyHeadOfGovernment')
-        response = rep.execute()
-        sendee_address = response['officials'][0]['address'][0]
-        try:
-            sendee_address_line2 = sendee_address['line2']
-        except KeyError:
-            sendee_address_line2 = ''
-        finally:
+            response = rep.execute()
+            sendee_address = response['officials'][0]['address'][0]
             sendee_name = response['officials'][0]['name']
-            sendee_address_line1 = sendee_address['line1']
             sendee_city = sendee_address['city']
             sendee_state = sendee_address['state']
             sendee_zip = sendee_address['zip']
+            sendee_address_line1 = sendee_address['line1']
+            sendee_address_line2 = sendee_address['line2']
+        except KeyError:
+            sendee_address_line2 = ''
+        except Exception:
+            return render_template('index.html', error="There was an error looking up information about your representative.")
 
-        letter = lob.Letter.create(
-            description = 'Letter to Representative',
-            to_address = {
-                'name': sendee_name,
-                'address_line1': sendee_address_line1,
-                'address_line2': sendee_address_line2,
-                'address_city': sendee_city,
-                'address_state': sendee_state,
-                'address_zip': sendee_zip,
-                'address_country': 'US'
-            },
-            from_address = {
-                'name': sender_name,
-                'address_line1': sender_address_line1,
-                'address_line2': sender_address_line2,
-                'address_city': sender_city,
-                'address_state': sender_state,
-                'address_zip': sender_zip,
-                'address_country': 'US'
-            },
-            file = '<html style="padding-top: 3in; margin: .5in;">{{ message }}</html>',
-            merge_variables = {
-                'message': sender_message
-            },
-            color = True
-        )
-        return render_template('index.html', url=letter['url'])
+        # create a letter using Lob API
+        try:
+            letter = lob.Letter.create(
+                description = 'Letter to Representative',
+                to_address = {
+                    'name': sendee_name,
+                    'address_line1': sendee_address_line1,
+                    'address_line2': sendee_address_line2,
+                    'address_city': sendee_city,
+                    'address_state': sendee_state,
+                    'address_zip': sendee_zip,
+                    'address_country': 'US'
+                },
+                from_address = {
+                    'name': sender_name,
+                    'address_line1': sender_address_line1,
+                    'address_line2': sender_address_line2,
+                    'address_city': sender_city,
+                    'address_state': sender_state,
+                    'address_zip': sender_zip,
+                    'address_country': 'US'
+                },
+                file = '<html style="padding-top: 3in; margin: .5in;">{{ message }}</html>',
+                merge_variables = {
+                    'message': 'Sample text here.' if len(sender_message) == 0 else sender_message.replace('\n', '<br>')
+                },
+                color = True
+            )
+            return render_template('index.html', url=letter['url'])
+        except Exception:
+            return render_template('index.html', error="There was an error processing your letter.")
     return render_template('index.html')
 
 if __name__ == '__main__':

@@ -13,6 +13,10 @@
         {% if url is defined%}
         Your most recently generated letter can be found <a href="{{url}}" target="_blank" rel="noopener noreferrer">here</a>.
         {% endif %}
+        {% if error is defined%}
+        {{error}}
+        {% endif %}
+        <br>
     </div>
     <div class="row">
         <form id="sender_form" class="col s12" method="post" action="{{ url_for('index') }}">
