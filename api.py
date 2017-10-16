@@ -1,6 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, request
 from apiclient.discovery import build
-from webbrowser import open
 from api_keys import google_civic_info_key, lob_api_key
 import lob
 
@@ -22,9 +21,10 @@ def index():
 
         # find representative to contact using Civic Info API
         try:
-            rep = civic_info_api.representatives().representativeInfoByAddress(address = sender_address_line1,
-                                                                           levels='administrativeArea1',
-                                                                           roles='deputyHeadOfGovernment')
+            rep = civic_info_api.representatives().representativeInfoByAddress(
+                address=sender_address_line1 + sender_address_line2 + sender_city + sender_state + sender_zip,
+                levels='administrativeArea1',
+                roles='deputyHeadOfGovernment')
             response = rep.execute()
             sendee_address = response['officials'][0]['address'][0]
             sendee_name = response['officials'][0]['name']
@@ -72,4 +72,4 @@ def index():
     return render_template('index.html')
 
 if __name__ == '__main__':
-    flask.run(debug=True)
+    flask.run()
